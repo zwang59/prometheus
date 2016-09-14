@@ -2,8 +2,8 @@
 #import matplotlib
 from random import uniform
 
-from apps.geofencing.dbmodels.sqldb.administration.admin import ApiError
-from apps.geofencing.pandora import Pandora
+from apps.geofencing.errors import ApiError
+from apps.geofencing.middleware.pandora import Pandora
 from flask import current_app
 
 
