@@ -1,9 +1,9 @@
-from resources import audiences
+from resources.audiences import AudienceProfileCollection
 
-API_NAME = 'ATLAS'
+API_NAME = 'PROMETHEUS'
 
 
-def add_resources_to_prometheus_api(atlas_api):
+def add_resources_to_prometheus_api(api):
     """
     All Api.add_resource calls should be added to this function. Since
     we want the resources to be added only after the Api has been initialized
@@ -12,9 +12,8 @@ def add_resources_to_prometheus_api(atlas_api):
     :param atlas_api:
     :return:
     """
-    atlas_api.add_resource(
-        audiences.AudienceCollection,
+    api.add_resource(
+        AudienceProfileCollection,
         '/prometheus/audiences',
-        '/prometheus/audiences/<string:audience_id>',
-        endpoint='geofences-collection'
+        endpoint='audiences-collection'
     )
