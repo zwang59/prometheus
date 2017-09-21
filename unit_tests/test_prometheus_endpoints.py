@@ -42,12 +42,14 @@ class PrometheusRestAPI(TestCase):
         current_app.logger.info("Running setUp")
         initialize_db(self, sqldb)
         mock_base_admin_data(self)
-        audience_profile_yml_path = os.path.abspath(os.path.join(__file__, "../../../../../manager/datainput/jenny.yaml"))
-        mock_prometheus_data(self, audience_profile_yml_path)
+        mock_prometheus_data(self)
 
     def tearDown(self):
         current_app.logger.info("Running tearDown")
         clear_db(self)
+
+    def test_test(self):
+        self.assertTrue(True)
 
     def test_get_audience_profile(self):
         access_token = self.test_tokens[0].access_token
