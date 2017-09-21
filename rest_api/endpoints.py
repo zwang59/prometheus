@@ -15,5 +15,6 @@ def add_resources_to_prometheus_api(api):
     api.add_resource(
         AudienceProfileCollection,
         '/prometheus/audiences',
+        '/prometheus/audiences/<string:audience_id>',
         endpoint='audiences-collection'
     )
