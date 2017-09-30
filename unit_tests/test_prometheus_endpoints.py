@@ -49,16 +49,34 @@ class PrometheusRestAPI(TestCase):
         self.assertTrue(True)
 
     def test_get_audience_profile(self):
-        access_token = self.test_tokens[0].access_token
-
-        # Test get all audience profiles
-        resp = self.client.get(url_for('audiences-collection', token=access_token))
-        self.assert200(resp)
-
-        print self.audience_profile.to_json()
+        token = self.test_tokens[0].access_token
+        header = {
+            'Authorization': token
+        }
 
         # Test get audience profile by id
-        resp = self.client.get(url_for('audiences-collection', token=access_token, audience_profile_id=self.audience_profile.id))
+        resp = self.client.get(
+            url_for(
+                'audiences-collection',
+                audience_profile_id=self.audience_profile.id
+            ),
+            headers=header
+        )
+
+        self.assert200(resp)
+
+        resp = self.client.get(
+            url_for(
+                'audiences-collection',
+                query='scatter-plot',
+                profile_id='1',
+                metric='frequency',
+                user_action='conversion',
+                time_measure='months',
+                time_window=8
+            ),
+            headers=header
+        )
         self.assert200(resp)
 
     def _test_post_audience_profile(self):
