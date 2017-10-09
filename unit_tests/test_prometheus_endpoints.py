@@ -58,7 +58,7 @@ class PrometheusRestAPI(TestCase):
         resp = self.client.get(
             url_for(
                 'audiences-collection',
-                audience_profile_id=self.audience_profile.id
+                audience_ref_id=self.audience_profile.ref_id
             ),
             headers=header
         )
@@ -69,7 +69,7 @@ class PrometheusRestAPI(TestCase):
             url_for(
                 'audiences-collection',
                 query='scatter-plot',
-                profile_id='1',
+                ref_id=2,
                 metric='frequency',
                 user_action='conversion',
                 time_measure='months',
@@ -79,22 +79,10 @@ class PrometheusRestAPI(TestCase):
         )
         self.assert200(resp)
 
-    def _test_post_audience_profile(self):
-        access_token = self.test_tokens[0].access_token
-
-        resp = self.client.post(url_for('audiences-collection', token=access_token))
-        self.assert200(resp)
-
     def _test_patch_audience_profile(self):
         access_token = self.test_tokens[0].access_token
 
         resp = self.client.patch(url_for('audiences-collection', token=access_token))
-        self.assert200(resp)
-
-    def _test_delete_audience_profile(self):
-        access_token = self.test_tokens[0].access_token
-
-        resp = self.client.delete(url_for('audiences-collection', token=access_token))
         self.assert200(resp)
 
 
