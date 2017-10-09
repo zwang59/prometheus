@@ -53,10 +53,9 @@ class AudienceProfileCollection(Resource):
             return handle_local_rest_error(err_msg, API_NAME, 404)
 
         profile = self.prometheus_api.get(ref_id=audience_ref_id)
-        if profile is None:
+        if not profile:
             err_msg = ValueError("No Audience Profile with audience_ref_id {0} returned".format(audience_ref_id))
             return handle_local_rest_error(err_msg,API_NAME, 404)
-
 
         return 'success'
 
