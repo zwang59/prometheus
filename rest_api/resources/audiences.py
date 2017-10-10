@@ -29,18 +29,20 @@ class AudienceProfileCollection(Resource):
             check_endpoint_permission_level(permission_level, self.MIN_LEVEL)
         except ValueError as error:
             return handle_local_rest_error(error, 403)
+
+        if audience_ref_id:
+            try:
+                return self.resource_query('profile', audience_ref_id=audience_ref_id)
+            except Exception as error:
+                return handle_local_rest_error(error, API_NAME)
+
         parser = reqparse.RequestParser()
         parser.add_argument('query', type=str, default='')
         args = parser.parse_args()
-        if not audience_ref_id:
-            try:
-                return self.resource_query(args['query'], **kwargs)
-            except Exception as error:
-                return handle_local_rest_error(error, API_NAME, 400)
         try:
-            return self.resource_query('profile', audience_ref_id=audience_ref_id)
+            return self.resource_query(args['query'], **kwargs)
         except Exception as error:
-            return handle_local_rest_error(error, API_NAME)
+            return handle_local_rest_error(error, API_NAME, 400)
 
     def patch(self, audience_ref_id=None, permission_level=0, **kwargs):
         try:
@@ -57,23 +59,30 @@ class AudienceProfileCollection(Resource):
             err_msg = ValueError("No Audience Profile with audience_ref_id {0} returned".format(audience_ref_id))
             return handle_local_rest_error(err_msg,API_NAME, 404)
 
+        args = self.patch_args()
+
         return 'success'
 
     # @flask_cache.memoize(timeout=50)
     def resource_query(self, query, audience_ref_id=None):
-        accepted_resource_queries = ('scatter-plot', 'profile')
+        accepted_resource_queries = ('scatter_plot', 'profile')
         if query not in accepted_resource_queries:
             err_msg = ValueError("Invalid - accepted query values ('scatter-plot')")
             return handle_local_rest_error(err_msg, API_NAME, 400)
         if query == 'profile':
+            print
             return self.query_profile(audience_ref_id)
-        if query == 'scatter-plot':
-            return self.query_scatter_plot()
+        else:
+            return getattr(
+                self,
+                'query_{0}'.format(query)
+            )()
 
     def query_profile(self, audience_ref_id):
         audience_profile = self.prometheus_api.get(ref_id=audience_ref_id)
-        if audience_profile is not None:
+        if audience_profile:
             resp_json = AudienceProfileSchema(many=True).dumps(audience_profile).data
+            print resp_json
             return to_json_resp(resp_json, 200)
         err_msg = NameError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(err_msg, 400)

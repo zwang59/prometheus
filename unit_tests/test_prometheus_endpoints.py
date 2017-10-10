@@ -48,7 +48,7 @@ class PrometheusRestAPI(TestCase):
     def _test_test(self):
         self.assertTrue(True)
 
-    def _test_get_audience_profile(self):
+    def test_get_audience_profile(self):
         token = self.test_tokens[0].access_token
         header = {
             'Authorization': token
@@ -64,22 +64,22 @@ class PrometheusRestAPI(TestCase):
         )
 
         self.assert200(resp)
+        #
+        # resp = self.client.get(
+        #     url_for(
+        #         'audiences-collection',
+        #         query='scatter-plot',
+        #         ref_id=2,
+        #         metric='frequency',
+        #         user_action='conversion',
+        #         time_measure='months',
+        #         time_window=8
+        #     ),
+        #     headers=header
+        # )
+        # self.assert200(resp)
 
-        resp = self.client.get(
-            url_for(
-                'audiences-collection',
-                query='scatter-plot',
-                ref_id=2,
-                metric='frequency',
-                user_action='conversion',
-                time_measure='months',
-                time_window=8
-            ),
-            headers=header
-        )
-        self.assert200(resp)
-
-    def test_patch_audience_profile(self):
+    def _test_patch_audience_profile(self):
         token = self.test_tokens[0].access_token
         header = {
             'Authorization': token
