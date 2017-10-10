@@ -70,7 +70,6 @@ class AudienceProfileCollection(Resource):
             err_msg = ValueError("Invalid - accepted query values ('scatter-plot')")
             return handle_local_rest_error(err_msg, API_NAME, 400)
         if query == 'profile':
-            print
             return self.query_profile(audience_ref_id)
         else:
             return getattr(
@@ -82,7 +81,6 @@ class AudienceProfileCollection(Resource):
         audience_profile = self.prometheus_api.get(ref_id=audience_ref_id)
         if audience_profile:
             resp_json = AudienceProfileSchema(many=True).dumps(audience_profile).data
-            print resp_json
             return to_json_resp(resp_json, 200)
         err_msg = NameError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(err_msg, 400)
