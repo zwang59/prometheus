@@ -3,7 +3,7 @@ from flask import current_app
 from flask_restful import Resource, reqparse
 from apps.geofencing.extensions.cache import flask_cache
 from apps.geofencing.rest_api_lib.rest_util import to_json_resp, handle_local_rest_error, check_endpoint_permission_level, \
-    authentication_required, query_filter
+    authentication_required, query_filter, parse_json_api_data
 from apps.geofencing.rest_api_lib.json_api_schemas.audience_profiles.audience_schemas import AudienceProfileSchema
 from apps.geofencing.middleware.prometheus.prometheus import Prometheus
 import pprint
@@ -18,6 +18,7 @@ class AudienceProfileCollection(Resource):
 
     def __init__(self):
         self.prometheus_api = Prometheus()
+        self.serializer = AudienceProfileSchema
         super(AudienceProfileCollection, self).__init__()
 
     def __repr__(self):
@@ -80,7 +81,7 @@ class AudienceProfileCollection(Resource):
     def query_profile(self, audience_ref_id):
         audience_profile = self.prometheus_api.get(ref_id=audience_ref_id)
         if audience_profile:
-            resp_json = AudienceProfileSchema(many=True).dumps(audience_profile).data
+            resp_json = self.serializer(many=True).dumps(audience_profile).data
             return to_json_resp(resp_json, 200)
         err_msg = NameError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(err_msg, 400)
@@ -100,3 +101,18 @@ class AudienceProfileCollection(Resource):
         profile_geofence_triggers = self.prometheus_api.get_geofence_trigger(args['ref_id'])
 
         return 'success'
+
+    def patch_args(self):
+        try:
+            return parse_json_api_data(self.serializer(), reqparse.RequestParser())
+        except TypeError:
+            parser = reqparse.RequestParser()
+            parser.add_argument('avatar', type=str)
+            parser.add_argument('name', type=str)
+            parser.add_argument('notes', type=str)
+            parser.add_argument('appshare', type=str)
+            parser.add_argument('appdata', type=str)
+            parser.add_argument('regionshare', type=str)
+            parser.add_argument('demographics', type=str)
+            parser.add_argument('behaviors', type=str)
+            return parser.parse_args()
