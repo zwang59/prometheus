@@ -1,12 +1,14 @@
 
 from flask import current_app
 from flask_restful import Resource, reqparse
+from flask_mongoengine import ValidationError
+
 from apps.geofencing.extensions.cache import flask_cache
 from apps.geofencing.rest_api_lib.rest_util import to_json_resp, handle_local_rest_error, check_endpoint_permission_level, \
     authentication_required, query_filter, parse_json_api_data
 from apps.geofencing.rest_api_lib.json_api_schemas.audience_profiles.audience_schemas import AudienceProfileSchema
 from apps.geofencing.middleware.prometheus.prometheus import Prometheus
-import pprint
+
 API_NAME = 'prometheus'
 
 
@@ -22,7 +24,6 @@ class AudienceProfileCollection(Resource):
         super(AudienceProfileCollection, self).__init__()
 
     def __repr__(self):
-        # Needed to ensure an imutable object is cached via the memoize function
         return '<{0}>'.format(self.__class__.__name__)
 
     def get(self, audience_ref_id=None, permission_level=0, **kwargs):
@@ -52,15 +53,33 @@ class AudienceProfileCollection(Resource):
             return handle_local_rest_error(error, API_NAME, 403)
 
         if not audience_ref_id:
-            err_msg = ValueError("Request parameter 'audience_ref_id' required")
-            return handle_local_rest_error(err_msg, API_NAME, 404)
+            error = ValueError("Request parameter 'audience_ref_id' required")
+            return handle_local_rest_error(error, API_NAME, 404)
 
-        profile = self.prometheus_api.get(ref_id=audience_ref_id)
+        profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
         if not profile:
-            err_msg = ValueError("No Audience Profile with audience_ref_id {0} returned".format(audience_ref_id))
-            return handle_local_rest_error(err_msg,API_NAME, 404)
+            error = ValueError("No Audience Profile with audience_ref_id {0} exists".format(audience_ref_id))
+            return handle_local_rest_error(error,API_NAME, 404)
 
         args = self.patch_args()
+
+        if args['name']:
+            try:
+                profile.modify(name=args['name'])
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
+
+        if args['avatar']:
+            try:
+                profile.modify(avatar=args['avatar'])
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
+
+        if args['notes']:
+            try:
+                profile.modify(notes=args['notes'])
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
 
         return 'success'
 
@@ -68,23 +87,20 @@ class AudienceProfileCollection(Resource):
     def resource_query(self, query, audience_ref_id=None):
         accepted_resource_queries = ('scatter_plot', 'profile')
         if query not in accepted_resource_queries:
-            err_msg = ValueError("Invalid - accepted query values ('scatter-plot')")
-            return handle_local_rest_error(err_msg, API_NAME, 400)
+            error = ValueError("Invalid - accepted query values ('scatter-plot')")
+            return handle_local_rest_error(error, API_NAME, 400)
         if query == 'profile':
             return self.query_profile(audience_ref_id)
         else:
-            return getattr(
-                self,
-                'query_{0}'.format(query)
-            )()
+            return getattr(self, 'query_{0}'.format(query))()
 
     def query_profile(self, audience_ref_id):
-        audience_profile = self.prometheus_api.get(ref_id=audience_ref_id)
+        audience_profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
         if audience_profile:
-            resp_json = self.serializer(many=True).dumps(audience_profile).data
+            resp_json = self.serializer().dumps(audience_profile).data
             return to_json_resp(resp_json, 200)
-        err_msg = NameError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
-        return handle_local_rest_error(err_msg, 400)
+        error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
+        return handle_local_rest_error(error, 400)
 
     def query_scatter_plot(self):
         parser = reqparse.RequestParser()

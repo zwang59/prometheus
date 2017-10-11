@@ -11,7 +11,7 @@ import os
 unitdir = os.path.abspath(os.path.dirname(__file__))
 prometheusdir = os.path.dirname(unitdir)
 geofencingdir = os.path.dirname(unitdir)
-
+import json
 
 # sys.path.append(os.path.abspath(os.path.join(basedir, '../../../../')))
 
@@ -48,13 +48,13 @@ class PrometheusRestAPI(TestCase):
     def _test_test(self):
         self.assertTrue(True)
 
-    def test_get_audience_profile(self):
+    def _test_get_audience_profile(self):
         token = self.test_tokens[0].access_token
+
         header = {
             'Authorization': token
         }
 
-        # Test get audience profile by id
         resp = self.client.get(
             url_for(
                 'audiences-collection',
@@ -79,19 +79,42 @@ class PrometheusRestAPI(TestCase):
         )
         self.assert200(resp)
 
-    def _test_patch_audience_profile(self):
+    def test_patch_audience_profile(self):
         token = self.test_tokens[0].access_token
         header = {
-            'Authorization': token
+            'Authorization': token,
         }
-
         resp = self.client.patch(
             url_for(
                 'audiences-collection',
-                audience_ref_id=self.audience_profile.ref_id
+                audience_ref_id=self.audience_profile.ref_id,
+                avatar='http://cdn-public.dgtl-factory.com/df-client-portal/audience_profiles/3/images/original/723164a\
+                  8ed8f957a5819e26d49b3cd34.png',
+                name='name',
+                notes='notes',
+                appshare='appshare',
+                appdata='appdata',
+                regionshare='regionshare',
+                demographics='demographics',
+                behaviors='behaviors'
             ),
             headers=header
         )
+
+        # header = {
+        #     'Authorization': token,
+        #     'Content-Type': 'application/vnd.api+json'
+        # }
+        # resource_obj = {}
+
+        # resp = self.client.patch(
+        #     url_for(
+        #         'audiences-collection',
+        #         audience_ref_id=self.audience_profile.ref_id,
+        #     ),
+        #     headers=header,
+        #     data=json.dumps(resource_obj)
+        # )
         self.assert200(resp)
 
 
