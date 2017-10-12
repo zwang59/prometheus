@@ -83,40 +83,71 @@ class PrometheusRestAPI(TestCase):
         token = self.test_tokens[0].access_token
         header = {
             'Authorization': token,
+            'Content-Type': 'application/vnd.api+json'
         }
+
+        resource_obj = {
+            "data": {
+                "attributes": {
+                    "name": "test",
+                    "notes": "test",
+                    "avatar": "http://test.png",
+                    "appshare": {
+                        "data": {
+                            "attributes": {
+                                "percentage": 0,
+                                "total": 0
+                            },
+                            "type": "appshare"
+                        }
+                    },
+                    "appdata": [
+                        {
+                            "data": {
+                                "attributes": {
+                                    "description": "opens",
+                                    "graph_max": 20,
+                                    "graph_min": 0,
+                                    "profile_min": 1,
+                                    "units": "daily",
+                                    "profile_max": 4,
+                                    "quantity": 2.5
+                                },
+                                "type": "appdata_metric"
+                            }
+                        },
+                        {
+                            "data": {
+                                "attributes": {
+                                    "description": "average rating",
+                                    "graph_max": 5,
+                                    "graph_min": 0,
+                                    "profile_min": 2,
+                                    "units": "stars",
+                                    "profile_max": 3,
+                                    "quantity": 2.5
+                                },
+                                "type": "appdata_metric"
+                            }
+                        }
+                    ]
+                },
+                "type": "audience_profile",
+                "links": {
+                    "self": "/prometheus/audiences"
+                }
+            }
+        }
+
         resp = self.client.patch(
             url_for(
                 'audiences-collection',
                 audience_ref_id=self.audience_profile.ref_id,
-                avatar='http://cdn-public.dgtl-factory.com/df-client-portal/audience_profiles/3/images/original/723164a\
-                  8ed8f957a5819e26d49b3cd34.png',
-                name='name',
-                notes='notes',
-                appshare='appshare',
-                appdata='appdata',
-                regionshare='regionshare',
-                demographics='demographics',
-                behaviors='behaviors'
             ),
-            headers=header
+            headers=header,
+            data=json.dumps(resource_obj)
         )
-
-        # header = {
-        #     'Authorization': token,
-        #     'Content-Type': 'application/vnd.api+json'
-        # }
-        # resource_obj = {}
-
-        # resp = self.client.patch(
-        #     url_for(
-        #         'audiences-collection',
-        #         audience_ref_id=self.audience_profile.ref_id,
-        #     ),
-        #     headers=header,
-        #     data=json.dumps(resource_obj)
-        # )
         self.assert200(resp)
-
 
 if __name__ == '__main__':
     unittest.main()

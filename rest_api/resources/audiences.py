@@ -63,23 +63,39 @@ class AudienceProfileCollection(Resource):
 
         args = self.patch_args()
 
-        if args['name']:
+        if 'name' in args:
             try:
-                profile.modify(name=args['name'])
+                self.prometheus_api.update_name(profile, args['name'])
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
-        if args['avatar']:
+        if 'avatar' in args:
             try:
-                profile.modify(avatar=args['avatar'])
+                self.prometheus_api.update_avatar(profile, args['avatar'])
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
-        if args['notes']:
+        if 'notes' in args:
             try:
-                profile.modify(notes=args['notes'])
+                self.prometheus_api.update_notes(profile, args['notes'])
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
+
+        if 'appshare' in args:
+            try:
+                self.prometheus_api.update_appshare(profile, args['appshare'])
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
+
+        if 'appdata' in args:
+            try:
+                self.prometheus_api.update_appdata(profile, args['appdata'])
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
+
+        # if args['appshare']:
+
+
 
         return 'success'
 
@@ -98,6 +114,7 @@ class AudienceProfileCollection(Resource):
         audience_profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
         if audience_profile:
             resp_json = self.serializer().dumps(audience_profile).data
+            print resp_json
             return to_json_resp(resp_json, 200)
         error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(error, 400)
