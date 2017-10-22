@@ -106,12 +106,12 @@ class PrometheusRestAPI(TestCase):
                             "data": {
                                 "attributes": {
                                     "description": "opens",
-                                    "graph_max": 20,
+                                    "graph_max": 0,
                                     "graph_min": 0,
-                                    "profile_min": 1,
-                                    "units": "daily",
-                                    "profile_max": 4,
-                                    "quantity": 2.5
+                                    "profile_min": 0,
+                                    "units": "test",
+                                    "profile_max": 0,
+                                    "quantity": 0
                                 },
                                 "type": "appdata_metric"
                             }
@@ -120,17 +120,76 @@ class PrometheusRestAPI(TestCase):
                             "data": {
                                 "attributes": {
                                     "description": "average rating",
-                                    "graph_max": 5,
+                                    "graph_max": 0,
                                     "graph_min": 0,
-                                    "profile_min": 2,
-                                    "units": "stars",
-                                    "profile_max": 3,
-                                    "quantity": 2.5
+                                    "profile_min": 0,
+                                    "units": "test",
+                                    "profile_max": 0,
+                                    "quantity": 0
                                 },
                                 "type": "appdata_metric"
                             }
                         }
-                    ]
+                    ],
+                    "demographics": {
+                        "data": {
+                            "attributes": {
+                                "commutes": [
+                                    {
+                                        "data": {
+                                            "attributes": {
+                                                "origin": "home",
+                                                "distance": {
+                                                    "data": {
+                                                        "attributes": {
+                                                            "graph_max": 0,
+                                                            "graph_min": 0,
+                                                            "profile_min": 0,
+                                                            "units": "test",
+                                                            "profile_max": 0,
+                                                            "quantity": 0
+                                                        },
+                                                        "type": "distance"
+                                                    }
+                                                },
+                                                "destination": "work",
+                                                "label": "bus",
+                                                "frequency": {
+                                                    "data": {
+                                                        "attributes": {
+                                                            "quantity": 0,
+                                                            "graph_max": 0,
+                                                            "graph_min": 0,
+                                                            "profile_min": 0,
+                                                            "units": "test",
+                                                            "profile_max": 0,
+                                                            "grouping": "test"
+                                                        },
+                                                        "type": "frequency"
+                                                    }
+                                                },
+                                                "duration": {
+                                                    "data": {
+                                                        "attributes": {
+                                                            "graph_max": 0,
+                                                            "graph_min": 0,
+                                                            "profile_min": 0,
+                                                            "units": "test",
+                                                            "profile_max": 0,
+                                                            "quantity": 0
+                                                        },
+                                                        "type": "duration"
+                                                    }
+                                                }
+                                            },
+                                            "type": "habit"
+                                        }
+                                    }
+                                ]
+                            },
+                            "type": "demographics"
+                        }
+                    },
                 },
                 "type": "audience_profile",
                 "links": {

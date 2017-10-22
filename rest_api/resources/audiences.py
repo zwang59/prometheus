@@ -65,37 +65,39 @@ class AudienceProfileCollection(Resource):
 
         if 'name' in args:
             try:
-                self.prometheus_api.update_name(profile, args['name'])
+                self.prometheus_api.update_name(profile, args.get('name'))
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
         if 'avatar' in args:
             try:
-                self.prometheus_api.update_avatar(profile, args['avatar'])
+                self.prometheus_api.update_avatar(profile, args.get('avatar'))
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
         if 'notes' in args:
             try:
-                self.prometheus_api.update_notes(profile, args['notes'])
+                self.prometheus_api.update_notes(profile, args.get('notes'))
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
         if 'appshare' in args:
             try:
-                self.prometheus_api.update_appshare(profile, args['appshare'])
+                self.prometheus_api.update_appshare(profile, args.get('appshare'))
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
         if 'appdata' in args:
             try:
-                self.prometheus_api.update_appdata(profile, args['appdata'])
+                self.prometheus_api.update_appdata(profile, args.get('appdata'))
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
-        # if args['appshare']:
-
-
+        if 'demographics' in args:
+            try:
+                self.prometheus_api.update_demographics(profile, args.get('demographics'))
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
 
         return 'success'
 
@@ -114,7 +116,6 @@ class AudienceProfileCollection(Resource):
         audience_profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
         if audience_profile:
             resp_json = self.serializer().dumps(audience_profile).data
-            print resp_json
             return to_json_resp(resp_json, 200)
         error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(error, 400)
