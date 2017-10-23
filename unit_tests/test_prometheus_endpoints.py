@@ -190,6 +190,167 @@ class PrometheusRestAPI(TestCase):
                             "type": "demographics"
                         }
                     },
+                    "behaviors": {
+                        "data": {
+                            "attributes": {
+                                "individual": {
+                                    "data": {
+                                        "attributes": {
+                                            "fast_food": {
+                                                "data": {
+                                                    "attributes": {
+                                                        "origin": "home",
+                                                        "distance": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "distance"
+                                                            }
+                                                        },
+                                                        "destination": "fast food",
+                                                        "label": "car",
+                                                        "frequency": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "frequency"
+                                                            }
+                                                        },
+                                                        "duration": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "duration"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "habit"
+                                                }
+                                            },
+                                            "gym": {
+                                                "data": {
+                                                    "attributes": {
+                                                        "origin": "work",
+                                                        "distance": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "distance"
+                                                            }
+                                                        },
+                                                        "destination": "gym",
+                                                        "label": "car",
+                                                        "frequency": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "frequency"
+                                                            }
+                                                        },
+                                                        "duration": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "duration"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "habit"
+                                                }
+                                            },
+                                            "shopping": {
+                                                "data": {
+                                                    "attributes": {
+                                                        "origin": "home",
+                                                        "distance": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "distance"
+                                                            }
+                                                        },
+                                                        "destination": "shopping",
+                                                        "label": "car",
+                                                        "frequency": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "frequency"
+                                                            }
+                                                        },
+                                                        "duration": {
+                                                            "data": {
+                                                                "attributes": {
+                                                                    "graph_max": 0,
+                                                                    "graph_min": 0,
+                                                                    "profile_min": 0,
+                                                                    "units": "test",
+                                                                    "profile_max": 0,
+                                                                    "quantity": 0
+                                                                },
+                                                                "type": "duration"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "habit"
+                                                }
+                                            }
+                                        },
+                                        "type": "individual"
+                                    }
+                                }
+                            },
+                            "type": "behaviors"
+                        }
+                    },
                 },
                 "type": "audience_profile",
                 "links": {

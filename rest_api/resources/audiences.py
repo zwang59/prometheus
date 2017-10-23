@@ -99,6 +99,12 @@ class AudienceProfileCollection(Resource):
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
+        if 'behaviors' in args:
+            try:
+                self.prometheus_api.update_behaviors(profile, args.get('behaviors'))
+            except ValidationError as error:
+                return handle_local_rest_error(error, API_NAME, 404)
+
         return 'success'
 
     # @flask_cache.memoize(timeout=50)
