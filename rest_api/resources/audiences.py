@@ -122,6 +122,7 @@ class AudienceProfileCollection(Resource):
         audience_profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
         if audience_profile:
             resp_json = self.serializer().dumps(audience_profile).data
+            print resp_json
             return to_json_resp(resp_json, 200)
         error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(error, 400)
