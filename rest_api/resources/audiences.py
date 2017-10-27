@@ -20,13 +20,181 @@ class AudienceProfileCollection(Resource):
 
     def __init__(self):
         self.prometheus_api = Prometheus()
-        self.serializer = AudienceProfileSchema
+        self.serializer = AudienceProfileSchema()
         super(AudienceProfileCollection, self).__init__()
 
     def __repr__(self):
         return '<{0}>'.format(self.__class__.__name__)
 
     def get(self, audience_ref_id=None, permission_level=0, **kwargs):
+        """
+                Read only queries against the Prfile resource collection. The example response below is for a single profile.
+                For queries returning multiple geofences a json encoded array of geofences will be returned.
+                All responses will be in json API format.
+
+                .. sourcecode:: http
+
+                    GET /prometheus/audiences/ HTTP/1.1
+                    Host: example.com
+                    Accept: application/vnd.api+json, application/json, text/*
+
+                .. sourcecode:: http
+
+                    GET /prometheus/audiences/<audience_ref_id>' HTTP/1.1
+                    Host: example.com
+                    Accept: application/vnd.api+json, application/json, text/*
+
+                **Example response**:
+
+                .. sourcecode:: http
+
+                    HTTP/1.1 200 OK
+                    Vary: Accept
+                    Content-Type: application/vnd.api+json, application/json, application/x-www-form-urlencoded
+
+                {
+                   "data":{
+                      "attributes":{
+                         "behaviors":[
+                            {
+                               "data":{
+                                  "attributes":{
+                                     "origin":"home",
+                                     "distance":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"distance"
+                                        }
+                                     },
+                                     "destination":"work",
+                                     "label":"bus",
+                                     "frequency":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"frequency"
+                                        }
+                                     },
+                                     "duration":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"duration"
+                                        }
+                                     }
+                                  },
+                                  "type":"habit"
+                               }
+                            }
+                         ],
+                         "name":"test",
+                         "appdata":[
+                            {
+                               "data":{
+                                  "attributes":{
+                                     "description":"average rating",
+                                     "graph_max":0,
+                                     "graph_min":0,
+                                     "profile_min":0,
+                                     "units":"test",
+                                     "profile_max":0,
+                                     "quantity":0.0
+                                  },
+                                  "type":"appdata_metric"
+                               }
+                            }
+                         ],
+                         "notes":"test",
+                         "ref-id":2,
+                         "demographics":{
+                            "data":{
+                               "attributes":{
+                                  "agerange":"test",
+                                  "familysize":"test",
+                                  "incomerange":"test",
+                                  "nationalorigin":"test"
+                               },
+                               "type":"demographics"
+                            }
+                         },
+                         "regionshare":{
+                            "data":{
+                               "attributes":{
+                                  "home":[
+                                     {
+                                        "data":{
+                                           "attributes":{
+                                              "units":"urban",
+                                              "percentage":0.33333
+                                           },
+                                           "type":"regionshare_metric"
+                                        }
+                                     }
+                                  ]
+                               },
+                               "type":"regionshare"
+                            }
+                         },
+                         "appshare":{
+                            "data":{
+                               "attributes":{
+                                  "percentage":0.0,
+                                  "total":0
+                               },
+                               "type":"appshare"
+                            }
+                         },
+                         "geofence-triggers":[]
+                         "avatar":"http://test.png"
+                      },
+                      "type":"audience_profile",
+                      "links":{
+                         "self":"/prometheus/audiences"
+                      }
+                   },
+                   "links":{
+                      "self":"/prometheus/audiences"
+                   }
+                }
+
+                :param string query: name of pre-defined query to be executed. See Query Parameters below for values.
+
+                :query scatter_plot: returns data specific to the analytics dashboards scatterplot display
+                :param string ref_id: profile to return associated data from
+                :param string metric:
+                :param string user_action:
+                :param string time_measure:
+                :param string time_window:
+
+                :reqheader Accept: the response content type depends on
+                                  :mailheader:`Accept` header
+                :reqheader Authorization: OAuth token to authenticate.
+                :resheader Content-Type: this depends on :mailheader:`Accept`
+                                        header of request
+                :statuscode 200: no error
+                :statuscode 204: no data
+                :statuscode 400: bad request
+                :statuscode 403: not authorized
+                """
         try:
             check_endpoint_permission_level(permission_level, self.MIN_LEVEL)
         except ValueError as error:
@@ -41,12 +209,280 @@ class AudienceProfileCollection(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument('query', type=str, default='')
         args = parser.parse_args()
+
         try:
             return self.resource_query(args['query'], **kwargs)
         except Exception as error:
             return handle_local_rest_error(error, API_NAME, 400)
 
     def patch(self, audience_ref_id=None, permission_level=0, **kwargs):
+        """
+               Handles the updates to existing resources.
+               Request data must be formated as a json api resource object.
+               All responses will be in json API format. See http://jsonapi.org/format/#crud for more information.
+
+               **Example request**:
+
+               {
+                   "data":{
+                      "attributes":{
+                         "behaviors":[
+                            {
+                               "data":{
+                                  "attributes":{
+                                     "origin":"home",
+                                     "distance":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"distance"
+                                        }
+                                     },
+                                     "destination":"work",
+                                     "label":"bus",
+                                     "frequency":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"frequency"
+                                        }
+                                     },
+                                     "duration":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"duration"
+                                        }
+                                     }
+                                  },
+                                  "type":"habit"
+                               }
+                            }
+                         ],
+                         "name":"test",
+                         "appdata":[
+                            {
+                               "data":{
+                                  "attributes":{
+                                     "description":"average rating",
+                                     "graph_max":0,
+                                     "graph_min":0,
+                                     "profile_min":0,
+                                     "units":"test",
+                                     "profile_max":0,
+                                     "quantity":0.0
+                                  },
+                                  "type":"appdata_metric"
+                               }
+                            }
+                         ],
+                         "notes":"test",
+                         "ref-id":2,
+                         "demographics":{
+                            "data":{
+                               "attributes":{
+                                  "agerange":"test",
+                                  "familysize":"test",
+                                  "incomerange":"test",
+                                  "nationalorigin":"test"
+                               },
+                               "type":"demographics"
+                            }
+                         },
+                         "regionshare":{
+                            "data":{
+                               "attributes":{
+                                  "home":[
+                                     {
+                                        "data":{
+                                           "attributes":{
+                                              "units":"urban",
+                                              "percentage":0.33333
+                                           },
+                                           "type":"regionshare_metric"
+                                        }
+                                     }
+                                  ]
+                               },
+                               "type":"regionshare"
+                            }
+                         },
+                         "appshare":{
+                            "data":{
+                               "attributes":{
+                                  "percentage":0.0,
+                                  "total":0
+                               },
+                               "type":"appshare"
+                            }
+                         },
+                         "geofence-triggers":[]
+                         "avatar":"http://test.png"
+                      },
+                      "type":"audience_profile",
+                      "links":{
+                         "self":"/prometheus/audiences"
+                      }
+                   },
+                   "links":{
+                      "self":"/prometheus/audiences"
+                   }
+                }
+
+               **Example response**:
+
+               {
+                   "data":{
+                      "attributes":{
+                         "behaviors":[
+                            {
+                               "data":{
+                                  "attributes":{
+                                     "origin":"home",
+                                     "distance":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"distance"
+                                        }
+                                     },
+                                     "destination":"work",
+                                     "label":"bus",
+                                     "frequency":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"frequency"
+                                        }
+                                     },
+                                     "duration":{
+                                        "data":{
+                                           "attributes":{
+                                              "graph_max":0,
+                                              "graph_min":0,
+                                              "profile_min":0,
+                                              "units":"test",
+                                              "profile_max":0,
+                                              "quantity":0.0
+                                           },
+                                           "type":"duration"
+                                        }
+                                     }
+                                  },
+                                  "type":"habit"
+                               }
+                            }
+                         ],
+                         "name":"test",
+                         "appdata":[
+                            {
+                               "data":{
+                                  "attributes":{
+                                     "description":"average rating",
+                                     "graph_max":0,
+                                     "graph_min":0,
+                                     "profile_min":0,
+                                     "units":"test",
+                                     "profile_max":0,
+                                     "quantity":0.0
+                                  },
+                                  "type":"appdata_metric"
+                               }
+                            }
+                         ],
+                         "notes":"test",
+                         "ref-id":2,
+                         "demographics":{
+                            "data":{
+                               "attributes":{
+                                  "agerange":"test",
+                                  "familysize":"test",
+                                  "incomerange":"test",
+                                  "nationalorigin":"test"
+                               },
+                               "type":"demographics"
+                            }
+                         },
+                         "regionshare":{
+                            "data":{
+                               "attributes":{
+                                  "home":[
+                                     {
+                                        "data":{
+                                           "attributes":{
+                                              "units":"urban",
+                                              "percentage":0.33333
+                                           },
+                                           "type":"regionshare_metric"
+                                        }
+                                     }
+                                  ]
+                               },
+                               "type":"regionshare"
+                            }
+                         },
+                         "appshare":{
+                            "data":{
+                               "attributes":{
+                                  "percentage":0.0,
+                                  "total":0
+                               },
+                               "type":"appshare"
+                            }
+                         },
+                         "geofence-triggers":[]
+                         "avatar":"http://test.png"
+                      },
+                      "type":"audience_profile",
+                      "links":{
+                         "self":"/prometheus/audiences"
+                      }
+                   },
+                   "links":{
+                      "self":"/prometheus/audiences"
+                   }
+                }
+
+               :reqheader Accept: the response content type depends on
+                         :mailheader:`Accept` header
+               :reqheader Authorization: required OAuth token to authenticate.
+               :resheader Content-Type:
+               :statuscode 200: OK
+               :statuscode 400: bad request
+               :statuscode 403: not authorized
+
+        """
+
         try:
             check_endpoint_permission_level(permission_level, self.MIN_LEVEL)
         except ValueError as error:
@@ -57,8 +493,9 @@ class AudienceProfileCollection(Resource):
             return handle_local_rest_error(error, API_NAME, 404)
 
         profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
+
         if not profile:
-            error = ValueError("No Audience Profile with audience_ref_id {0} exists".format(audience_ref_id))
+            error = ValueError("No Audience Profile with audience_ref_id {0} found".format(audience_ref_id))
             return handle_local_rest_error(error,API_NAME, 404)
 
         args = self.patch_args()
@@ -105,10 +542,12 @@ class AudienceProfileCollection(Resource):
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
-        return 'success'
+        resp = self.serializer.dumps(profile).data
+
+        return to_json_resp(resp, 200)
 
     # @flask_cache.memoize(timeout=50)
-    def resource_query(self, query, audience_ref_id=None):
+    def resource_query(self, query, audience_ref_id):
         accepted_resource_queries = ('scatter_plot', 'profile')
         if query not in accepted_resource_queries:
             error = ValueError("Invalid - accepted query values ('scatter-plot')")
@@ -119,10 +558,9 @@ class AudienceProfileCollection(Resource):
             return getattr(self, 'query_{0}'.format(query))()
 
     def query_profile(self, audience_ref_id):
-        audience_profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
-        if audience_profile:
-            resp_json = self.serializer().dumps(audience_profile).data
-            print resp_json
+        profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
+        if profile:
+            resp_json = self.serializer.dumps(profile).data
             return to_json_resp(resp_json, 200)
         error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(error, 400)
@@ -135,25 +573,18 @@ class AudienceProfileCollection(Resource):
         parser.add_argument('time_measure', type=str, required=True)
         parser.add_argument('time_window', type=int, required=True)
         args = parser.parse_args()
+
         if not args:
             err_msg = ValueError("Request query 'scatter-plot' requires parameters ('ref_id' int, 'metric' str, 'user_action' str, \
             'time_measure' str, 'time_window' str")
             return handle_local_rest_error(err_msg, API_NAME, 400)
-        profile_geofence_triggers = self.prometheus_api.get_geofence_trigger(args['ref_id'])
+
+        # profile_geofence_triggers = self.prometheus_api.get_geofence_trigger(args['ref_id'])
 
         return 'success'
 
     def patch_args(self):
         try:
-            return parse_json_api_data(self.serializer(), reqparse.RequestParser())
-        except TypeError:
-            parser = reqparse.RequestParser()
-            parser.add_argument('avatar', type=str)
-            parser.add_argument('name', type=str)
-            parser.add_argument('notes', type=str)
-            parser.add_argument('appshare', type=str)
-            parser.add_argument('appdata', type=str)
-            parser.add_argument('regionshare', type=str)
-            parser.add_argument('demographics', type=str)
-            parser.add_argument('behaviors', type=str)
-            return parser.parse_args()
+            return parse_json_api_data(self.serializer, reqparse.RequestParser())
+        except TypeError as error:
+            return handle_local_rest_error(error, 400)
