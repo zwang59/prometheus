@@ -210,10 +210,14 @@ class AudienceProfileCollection(Resource):
         parser.add_argument('query', type=str, default='')
         args = parser.parse_args()
 
-        try:
-            return self.resource_query(args['query'], **kwargs)
-        except Exception as error:
-            return handle_local_rest_error(error, API_NAME, 400)
+        if args['query']:
+            try:
+                return self.resource_query(args['query'], **kwargs)
+            except Exception as error:
+                return handle_local_rest_error(error, API_NAME, 400)
+        else:
+            err_msg = ValueError("Invalid or missing request parameters")
+            return handle_local_rest_error(err_msg, API_NAME, 400)
 
     def patch(self, audience_ref_id=None, permission_level=0, **kwargs):
         """
@@ -547,7 +551,7 @@ class AudienceProfileCollection(Resource):
         return to_json_resp(resp, 200)
 
     # @flask_cache.memoize(timeout=50)
-    def resource_query(self, query, audience_ref_id):
+    def resource_query(self, query, audience_ref_id=None):
         accepted_resource_queries = ('scatter_plot', 'profile')
         if query not in accepted_resource_queries:
             error = ValueError("Invalid - accepted query values ('scatter-plot')")
