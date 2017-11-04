@@ -62,6 +62,15 @@ class PrometheusRestAPI(TestCase):
 
         self.assert200(resp)
 
+        resp = self.client.get(
+            url_for(
+                'audiences-collection'
+            ),
+            headers=header
+        )
+
+        self.assert200(resp)
+
         # resp = self.client.get(
         #     url_for(
         #         'audiences-collection',

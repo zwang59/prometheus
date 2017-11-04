@@ -14,7 +14,7 @@ API_NAME = 'prometheus'
 
 class AudienceProfileCollection(Resource):
 
-    method_decorators = [authentication_required]
+    # method_decorators = [authentication_required]
 
     MIN_LEVEL = 10
 
@@ -212,12 +212,11 @@ class AudienceProfileCollection(Resource):
 
         if args['query']:
             try:
-                return self.resource_query(args['query'], **kwargs)
+                return self.resource_query(args['query'])
             except Exception as error:
                 return handle_local_rest_error(error, API_NAME, 400)
         else:
-            err_msg = ValueError("Invalid or missing request parameters")
-            return handle_local_rest_error(err_msg, API_NAME, 400)
+            return self.query_all_profile()
 
     def patch(self, audience_ref_id=None, permission_level=0, **kwargs):
         """
@@ -568,6 +567,11 @@ class AudienceProfileCollection(Resource):
             return to_json_resp(resp_json, 200)
         error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(error, 400)
+
+    def query_all_profile(self):
+        profiles = self.prometheus_api.get_all()
+        resp_json = AudienceProfileSchema(many=True).dumps(profiles).data
+        return to_json_resp(resp_json)
 
     def query_scatter_plot(self):
         parser = reqparse.RequestParser()
