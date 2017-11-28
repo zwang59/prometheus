@@ -202,12 +202,12 @@ class AudienceProfileCollection(Resource):
 
         if audience_ref_id:
             try:
-                return self.resource_query('profile', audience_ref_id=audience_ref_id)
+                return self.query_profile(audience_ref_id)
             except Exception as error:
                 return handle_local_rest_error(error, API_NAME)
 
         parser = reqparse.RequestParser()
-        parser.add_argument('query', type=str, default='')
+        parser.add_argument('query', type=str, default=None)
         args = parser.parse_args()
 
         if args['query']:
@@ -550,13 +550,11 @@ class AudienceProfileCollection(Resource):
         return to_json_resp(resp, 200)
 
     # @flask_cache.memoize(timeout=50)
-    def resource_query(self, query, audience_ref_id=None):
+    def resource_query(self, query):
         accepted_resource_queries = ('scatter_plot', 'profile')
         if query not in accepted_resource_queries:
             error = ValueError("Invalid - accepted query values ('scatter-plot')")
             return handle_local_rest_error(error, API_NAME, 400)
-        if query == 'profile':
-            return self.query_profile(audience_ref_id)
         else:
             return getattr(self, 'query_{0}'.format(query))()
 

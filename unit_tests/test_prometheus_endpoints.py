@@ -60,6 +60,8 @@ class PrometheusRestAPI(TestCase):
             headers=header
         )
 
+        print resp.data
+
         self.assert200(resp)
 
         resp = self.client.get(
@@ -85,7 +87,7 @@ class PrometheusRestAPI(TestCase):
         # )
         # self.assert200(resp)
 
-    def _test_patch_audience_profile(self):
+    def test_patch_audience_profile(self):
         token = self.test_tokens[0].access_token
         header = {
             'Authorization': token,
