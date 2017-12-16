@@ -6,6 +6,7 @@ from flask_testing import TestCase
 from flask_restful import url_for
 
 import os
+import sys
 
 # Path to import locus folder
 unitdir = os.path.abspath(os.path.dirname(__file__))
@@ -13,11 +14,12 @@ prometheusdir = os.path.dirname(unitdir)
 geofencingdir = os.path.dirname(unitdir)
 import json
 
-# sys.path.append(os.path.abspath(os.path.join(basedir, '../../../../')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../')))
 
 from apps.geofencing import create_app
 from apps.geofencing.config import TestingConfig
-from apps.geofencing.rest_api_lib.mock_rest_api_test_data import initialize_db, clear_db, mock_base_admin_data, mock_dashboard_data
+from apps.geofencing.rest_api_lib.mock_rest_api_test_data import initialize_db, clear_db, mock_base_admin_data, \
+    mock_dashboard_data, mock_content_db
 from apps.geofencing.extensions.sqldb import sqldb
 from apps.geofencing.rest_api_lib.json_api_schemas.audience_profiles.audience_schemas import AudienceProfileSchema
 
@@ -35,6 +37,7 @@ class PrometheusRestAPI(TestCase):
     def setUp(self):
         current_app.logger.info("Running setUp")
         initialize_db(self, sqldb)
+        mock_content_db(self, 'mock_content.json')
         mock_base_admin_data(self)
         mock_dashboard_data(self)
 
@@ -42,10 +45,10 @@ class PrometheusRestAPI(TestCase):
         current_app.logger.info("Running tearDown")
         clear_db(self)
 
-    def _test_test(self):
+    def test_test(self):
         self.assertTrue(True)
 
-    def test_get_audience_profile(self):
+    def _test_get_audience_profile(self):
         token = self.test_tokens[0].access_token
 
         header = {
@@ -59,8 +62,6 @@ class PrometheusRestAPI(TestCase):
             ),
             headers=header
         )
-
-        print resp.data
 
         self.assert200(resp)
 
@@ -87,7 +88,7 @@ class PrometheusRestAPI(TestCase):
         # )
         # self.assert200(resp)
 
-    def test_patch_audience_profile(self):
+    def _test_patch_audience_profile(self):
         token = self.test_tokens[0].access_token
         header = {
             'Authorization': token,
