@@ -22,6 +22,7 @@ from apps.geofencing.rest_api_lib.mock_rest_api_test_data import initialize_db, 
     mock_dashboard_data, mock_content_db
 from apps.geofencing.extensions.sqldb import sqldb
 from apps.geofencing.rest_api_lib.json_api_schemas.audience_profiles.audience_schemas import AudienceProfileSchema
+from apps.geofencing.rest_api_lib.json_api_schemas.sample_schemas import get_resource_obj
 
 
 class PrometheusRestAPI(TestCase):
@@ -95,120 +96,7 @@ class PrometheusRestAPI(TestCase):
             'Content-Type': 'application/vnd.api+json'
         }
 
-        resource_obj = {
-            "data": {
-                "attributes": {
-                    "name": "test",
-                    "notes": "test",
-                    "avatar": "http://test.png",
-                    "appshare": {
-                        "data": {
-                            "attributes": {
-                                "percentage": 0,
-                                "total": 0
-                            },
-                            "type": "appshare"
-                        }
-                    },
-                    "appdata": [
-                        {
-                            "data": {
-                                "attributes": {
-                                    "description": "opens",
-                                    "graph_max": 0,
-                                    "graph_min": 0,
-                                    "profile_min": 0,
-                                    "units": "test",
-                                    "profile_max": 0,
-                                    "quantity": 0
-                                },
-                                "type": "appdata_metric"
-                            }
-                        },
-                        {
-                            "data": {
-                                "attributes": {
-                                    "description": "average rating",
-                                    "graph_max": 0,
-                                    "graph_min": 0,
-                                    "profile_min": 0,
-                                    "units": "test",
-                                    "profile_max": 0,
-                                    "quantity": 0
-                                },
-                                "type": "appdata_metric"
-                            }
-                        }
-                    ],
-                    "demographics": {
-                        "data": {
-                            "attributes": {
-                                "agerange": "test",
-                                "familysize": "test",
-                                "incomerange": "test",
-                                "nationalorigin": "test"
-                            },
-                            "type": "demographics"
-                        }
-                    },
-                    "behaviors": [
-                        {
-                            "data": {
-                                "attributes": {
-                                    "origin": "home",
-                                    "distance": {
-                                        "data": {
-                                            "attributes": {
-                                                "graph_max": 0,
-                                                "graph_min": 0,
-                                                "profile_min": 0,
-                                                "units": "test",
-                                                "profile_max": 0,
-                                                "quantity": 0
-                                            },
-                                            "type": "distance"
-                                        }
-                                    },
-                                    "destination": "work",
-                                    "label": "bus",
-                                    "frequency": {
-                                        "data": {
-                                            "attributes": {
-                                                "graph_max": 0,
-                                                "graph_min": 0,
-                                                "profile_min": 0,
-                                                "units": "test",
-                                                "profile_max": 0,
-                                                "quantity": 0
-                                            },
-                                            "type": "frequency"
-                                        }
-                                    },
-                                    "duration": {
-                                        "data": {
-                                            "attributes": {
-                                                "graph_max": 0,
-                                                "graph_min": 0,
-                                                "profile_min": 0,
-                                                "units": "test",
-                                                "profile_max": 0,
-                                                "quantity": 0
-                                            },
-                                            "type": "duration"
-                                        }
-                                    }
-                                },
-                                "type": "habit"
-                            }
-                        },
-                    ],
-                },
-                "type": "audience_profile",
-                "links": {
-                    "self": "/prometheus/audiences"
-                }
-            }
-        }
+        resource_obj = get_resource_obj('post_patch_audience_profile')
 
         resp = self.client.patch(
             url_for(
