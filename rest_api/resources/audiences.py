@@ -14,7 +14,7 @@ API_NAME = 'prometheus'
 
 class AudienceProfileCollection(Resource):
 
-    # method_decorators = [authentication_required]
+    method_decorators = [authentication_required]
 
     MIN_LEVEL = 10
 
