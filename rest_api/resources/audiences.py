@@ -567,7 +567,7 @@ class AudienceProfileCollection(Resource):
         return handle_local_rest_error(error, 400)
 
     def query_all_profile(self):
-        profiles = self.prometheus_api.get_all()
+        profiles = self.prometheus_api.get_all_collections()
         resp_json = AudienceProfileSchema(many=True).dumps(profiles).data
         return to_json_resp(resp_json)
 
