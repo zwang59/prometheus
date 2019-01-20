@@ -34,10 +34,10 @@ class Recommender(object):
                     return content
                 else:
                     current_app.logger.warning('Pool has not Content Information')
-            except Exception, e:
+            except Exception as e:
                 #return None
                 current_app.logger.info(str(index))
-                print len(content_list)
+                print(len(content_list))
                 raise ApiError(self.__class__.__name__, e.message, "404")
         else:
             return None

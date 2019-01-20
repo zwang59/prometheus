@@ -28,7 +28,7 @@ class AudienceProfileCollection(Resource):
 
     def get(self, audience_ref_id=None, permission_level=0, **kwargs):
         """
-                Read only queries against the Prfile resource collection. The example response below is for a single profile.
+                Read only queries against the Profile resource collection. The example response below is for a single profile.
                 For queries returning multiple geofences a json encoded array of geofences will be returned.
                 All responses will be in json API format.
 

@@ -1,4 +1,4 @@
-from resources.audiences import AudienceProfileCollection
+from apps.geofencing.prometheus.rest_api.resources.audiences import AudienceProfileCollection
 
 API_NAME = 'PROMETHEUS'
 
