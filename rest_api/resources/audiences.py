@@ -4,10 +4,10 @@ from flask_restful import Resource, reqparse
 from flask_mongoengine import ValidationError
 
 from apps.geofencing.extensions.cache import flask_cache
-from apps.geofencing.rest_api_lib.rest_util import to_json_resp, handle_local_rest_error, check_endpoint_permission_level, \
-    authentication_required, query_filter, parse_json_api_data
+from apps.geofencing.rest_api_lib.rest_util import to_json_resp, handle_local_rest_error, check_endpoint_permission_level, query_filter, parse_json_api_data
 from apps.geofencing.rest_api_lib.json_api_schemas.audience_profiles.audience_schemas import AudienceProfileSchema
 from apps.geofencing.middleware.prometheus.prometheus import Prometheus
+from apps.geofencing.middleware.themis.rest_auth import authentication_required
 
 API_NAME = 'prometheus'
 
