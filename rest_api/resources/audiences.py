@@ -545,7 +545,7 @@ class AudienceProfileCollection(Resource):
             except ValidationError as error:
                 return handle_local_rest_error(error, API_NAME, 404)
 
-        resp = self.serializer.dumps(profile).data
+        resp = self.serializer.dumps(profile)
 
         return to_json_resp(resp, 200)
 
@@ -561,14 +561,14 @@ class AudienceProfileCollection(Resource):
     def query_profile(self, audience_ref_id):
         profile = self.prometheus_api.get_first(ref_id=audience_ref_id)
         if profile:
-            resp_json = self.serializer.dumps(profile).data
+            resp_json = self.serializer.dumps(profile)
             return to_json_resp(resp_json, 200)
         error = ValueError('Audience Ref ID {0} Not Found.'.format(audience_ref_id))
         return handle_local_rest_error(error, 400)
 
     def query_all_profile(self):
         profiles = self.prometheus_api.get_all_collections()
-        resp_json = AudienceProfileSchema(many=True).dumps(profiles).data
+        resp_json = AudienceProfileSchema(many=True).dumps(profiles)
         return to_json_resp(resp_json)
 
     def query_scatter_plot(self):
