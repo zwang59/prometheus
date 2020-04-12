@@ -28,7 +28,7 @@ from apps.geofencing.rest_api_lib.json_api_schemas.sample_schemas import get_res
 class PrometheusRestAPI(TestCase):
 
     def create_app(self):
-        app = create_app(TestingConfig)
+        app = create_app(config="test")
         app.config['TESTING'] = True
         app.config['DEBUG'] = True
         app.config['MONGODB_SETTINGS'] = {'DB': 'prometheus_test'}
