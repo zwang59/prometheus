@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 """
     Library functions for ML models
 """
@@ -30,7 +27,7 @@ def Linear_model(data):
     from sklearn.model_selection import cross_val_score
     import matplotlib.pyplot as plt
 
-    df = pd.read_csv(data)
+    df = data
     df = df.fillna(0)
     feature = ['Device_ID','Category_Num','Gender_Num','Geohash_Num','Start_time_Cat','End_time_Cat','Start_Time_Weight','End_Time_Weight','Duration','Weekday','Week_Num','Month_Num','tavg','weather']
     X = df[feature]
@@ -59,6 +56,61 @@ def Linear_model(data):
   
     print("Cross Validation:")
     scores  = cross_val_score(Linear_model, X_test, y_test, cv=10).mean()
+    print("Cross_Val_Score: {}".format(scores))
+    
+    
+def Descion_Tree_model(data):
+    """ 
+    This function performs Descion_Tree_model on the loaded data.
+
+    Parameters
+    ----------
+    data: loaded data
+
+    Returns
+    -------
+    Descion_Tree_model scores
+
+    """
+    import pandas as pd
+    import lightgbm as lgb
+    from sklearn.metrics import mean_squared_error
+    from sklearn.datasets import load_iris
+    from sklearn.model_selection import train_test_split
+    import sklearn.linear_model as sk_linear
+    from sklearn.model_selection import cross_val_score
+    import matplotlib.pyplot as plt
+
+    df = data
+    df = df.fillna(0)
+    feature = ['Device_ID','Category_Num','Gender_Num','Geohash_Num','Start_time_Cat','End_time_Cat','Start_Time_Weight','End_Time_Weight','Duration','Weekday','Week_Num','Month_Num','tavg','weather']
+    X = df[feature]
+    y = df['Next_Geohash_Num']
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    print("Train data length:", len(X_train))
+    print("Test data length:", len(X_test))
+    
+    import sklearn.tree as sk_tree
+    Descion_Tree_model = sk_tree.DecisionTreeClassifier(criterion='entropy',max_depth=None,min_samples_split=2,min_samples_leaf=1,max_features=None,max_leaf_nodes=None,min_impurity_decrease=0)
+    Descion_Tree_model.fit(X_train,y_train)
+    acc2=Descion_Tree_model.score(X_test,y_test) 
+    
+
+    print('Descion Tree Model:')
+    print('Descion Tree Accuracy:',acc2)
+    
+    y_pred = Descion_Tree_model.predict(X_test)
+    
+    plt.figure(facecolor='w')  
+    plt.plot(range(len(y_pred)),y_test,'r-',linewidth=2,label='test')
+    plt.plot(range(len(y_pred)),y_pred,'g-',linewidth=2,label='predict')
+    plt.legend(loc='upper left') 
+    plt.grid(True)  
+    plt.show()
+  
+    print("Cross Validation:")
+    scores  = cross_val_score(Descion_Tree_model, X_test, y_test, cv=10).mean()
     print("Cross_Val_Score: {}".format(scores))
     
     
