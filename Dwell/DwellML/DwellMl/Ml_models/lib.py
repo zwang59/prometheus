@@ -122,6 +122,16 @@ def Descion_Tree_model(data):
     
     
 def KNN_Class_model(data):
+    """ 
+    This function performs KNN_Class_model on the loaded data.
+    Parameters
+    ----------
+    data: loaded data
+    Returns
+    -------
+    KNN_Class_model scores
+    """
+    
     import pandas as pd
     import lightgbm as lgb
     from sklearn.metrics import mean_squared_error
