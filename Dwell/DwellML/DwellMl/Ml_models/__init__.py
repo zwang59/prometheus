@@ -6,5 +6,6 @@
 
 from .lib import (  # noqa
     Linear_model
+    Descion_Tree_model
 )
 
