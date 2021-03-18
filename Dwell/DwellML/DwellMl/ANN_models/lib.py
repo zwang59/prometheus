@@ -28,6 +28,10 @@ def ANN_model(data):
     from sklearn.model_selection import cross_val_score
     import matplotlib.pyplot as plt
     
+    import warnings
+
+    warnings.filterwarnings('ignore')
+    
     df = data
     feature = ['Device_ID','Category_Num','Gender_Num','Geohash_Num','Start_time_Cat','End_time_Cat','Start_Time_Weight','End_Time_Weight','Duration','Weekday','Week_Num','Month_Num','tavg','weather']
     X = df[feature]
